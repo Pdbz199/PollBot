@@ -1,18 +1,19 @@
-var express = require('express')
+const express = require('express')
 const fs = require('fs')
-const secrets = JSON.parse(fs.readFileSync('./secret.keys'))
+const secrets = JSON.parse(fs.readFileSync('secret.keys'))
 const bot_token = secrets.bot_token
 const client_id = secrets.client_id
 const client_secret = secrets.client_secret
-// const channel = secrets.channel
 const Slack = require('slack')
 const bot = new Slack({bot_token})
-const redirect_uri = "https://40985cdc.ngrok.io/auth/redirect"
+const redirect_uri = "https://0b778865.ngrok.io/auth/redirect"
 const request = require('request')
-const app = express()
+app = express()
 const bodyParser = require('body-parser')
 const urlencodedParser = bodyParser.urlencoded({ extended: false })
 const jsonParser = bodyParser.json()
+const port = 7600
+app.listen(port)
 
 const numberEmojis = [':zero:', ':one:', ':two:', ':three:', ':four:', ':five:', ':six:', ':seven:', ':eight:', ':nine:', ':keycap_ten:']
 const pollOptionUserBlock = {
@@ -82,8 +83,8 @@ app.post('/poll', urlencodedParser, (req, res) => {
 
 app.get('/auth/redirect', (req, res) => {
     var options = {
-        uri: `https://slack.com/api/oauth.access?code=${req.query.code}&client_id=${client_id}&client_secret=${client_secret}&redirect_uri=${redirect_uri}`,
-        method: 'GET'
+        uri: `https://slack.com/api/oauth.v2.access?code=${req.query.code}&client_id=${client_id}&client_secret=${client_secret}&redirect_uri=${redirect_uri}`,
+        method: 'POST'
     }
 
     request(options, (error, response, body) => {
@@ -98,8 +99,6 @@ app.get('/auth/redirect', (req, res) => {
         }
     })
 })
-
-app.listen(3000)
 
 function postPoll(channel, user, question, options) {
     let blocks = []
