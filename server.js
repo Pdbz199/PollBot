@@ -74,7 +74,8 @@ app.post('/poll', urlencodedParser, (req, res) => {
     if (response.command !== '/poll') res.end()
     let channel = response.channel_id
     let user = response.user_id
-    let values = response.text.split("\"").filter(item => item !== '' && item !== ' ')
+    let command = response.text.replace(/“|”/g, "\"")
+    let values = command.split("\"").filter(item => item !== '' && item !== ' ')
     let question = values[0]
     let options = values.slice(1)
 
